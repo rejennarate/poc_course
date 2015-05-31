@@ -16,24 +16,49 @@ def merge(line):
     the tile values from line slid towards the front of the list and merged.
     Note that you should return a new list and you should not modify the input list.
     """
-    #print line.count(0)
-    #print line.count(2)
-    #print line.count(4)
-    #print line
-
-    # create a result list with the same number of 0s as the length of line
-    # iterate over the line input looking for non-zero entries. For each non-zero entry,
-    # put the value into the next available entry of the result list (starting at position 0).
     result_list = []
 
     for number in line:
         result_list.insert(0,0)
         if number != 0:
             result_list.remove(0)
-            #this won't work because it moves the order of the last numbers unless there's only one 0
             result_list.append(number)
 
     for number in line:
+        if number == 0:
+            result_list.remove(0)
+            result_list.append(0)
+
+    # Iterate over the list created in the previous step and create another new list
+    # in which pairs of tiles in the first list are replaced with a tile of
+    # twice the value and a zero tile.
+    #for number in result_list:
+
+
+
+    pairs = zip(result_list, result_list[1:])
+    print pairs
+    for num1, num2 in pairs:
+        if num1 == num2 and num1 != 0 and num2 != 0:
+            merged_num = num1+num2
+            result_list.insert(num1, 0)
+            result_list.insert(num1, merged_num)
+            del result_list[:num2]
+    #     for x, y in zip(result_list, result_list[1:]):
+    #         #print result_list
+    #         print x, y
+    #         print result_list
+            #if x == y:
+                #merged_num = [x+y,0]
+                #del result_list[x:y]
+                #print result_list
+                #result_list.insert(x, merged_num)
+                #print result_list
+            # elif x!= y:
+            #     result_list.remove(x)
+            #     result_list.append(x)
+
+    for number in result_list:
         if number == 0:
             result_list.remove(0)
             result_list.append(0)
@@ -57,5 +82,6 @@ def test_merge():
     print "Testing line3 - Computed:", merge(line3), "Expected:", [4, 0, 0, 0]
     print "Testing line4 - Computed:", merge(line4), "Expected:", [4, 4, 2, 0, 0]
     print "Testing line5 - Computed:", merge(line5), "Expected:", [8, 32, 8, 0]
+    # maybe also test that len(line) matches len(result_list)
 
 test_merge()
