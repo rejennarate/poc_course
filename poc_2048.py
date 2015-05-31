@@ -29,21 +29,23 @@ def merge(line):
             result_list.remove(0)
             result_list.append(0)
 
-    # Iterate over the list created in the previous step and create another new list
-    # in which pairs of tiles in the first list are replaced with a tile of
-    # twice the value and a zero tile.
-    #for number in result_list:
-
-
-
     pairs = zip(result_list, result_list[1:])
-    print pairs
     for num1, num2 in pairs:
         if num1 == num2 and num1 != 0 and num2 != 0:
             merged_num = num1+num2
-            result_list.insert(num1, 0)
-            result_list.insert(num1, merged_num)
-            del result_list[:num2]
+            num1_index = result_list.index(num1)
+            num2_index = num1_index+1
+
+            del result_list[num1_index:num2_index+1]
+            result_list.insert(num1_index, 0)
+
+            result_list.insert(num1_index, merged_num)
+
+            # this is looking for the index in result_list that is literally num2, i.e. result_list[16]
+            # i need to delete the index where 16 occurs
+
+            #del result_list[num1_index:num2_index]
+            print result_list
     #     for x, y in zip(result_list, result_list[1:]):
     #         #print result_list
     #         print x, y
