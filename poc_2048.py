@@ -55,6 +55,9 @@ def merge(line):
 
 
 def traverse_grid(start_cell, direction, num_steps):
+    """
+    method to traverse the grid, used to capturing initial tiles
+    """
     for step in range(num_steps):
         dummy_row = start_cell[0] + step * direction[0]
         dummy_col = start_cell[1] + step * direction[1]
@@ -73,6 +76,7 @@ class TwentyFortyEight:
                                UP: traverse_grid((0,0), (0,1), grid_height),
                                RIGHT: traverse_grid((0, grid_width - 1), (1, 0), grid_height),
                                DOWN: traverse_grid((grid_height - 1, 0), (0, 1), grid_width)}
+
         # self._initial_tiles[LEFT]
         # self._initial_tiles[UP]
         # self._initial_tiles[RIGHT]
@@ -115,7 +119,9 @@ class TwentyFortyEight:
         """
         # this might be the place to use the 'direction' param
         # to determine how the algorithm is applied in 'merge'
-        pass
+
+        print self._initial_tiles[direction]
+
 
     def new_tile(self):
         """
@@ -145,9 +151,6 @@ class TwentyFortyEight:
         Return the value of the tile at position row, col.
         """
         return self._board[row][col]
-
-
-
 
 
 def test_merge():
