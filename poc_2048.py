@@ -54,14 +54,6 @@ def merge(line):
     return result_list
 
 
-def traverse_grid(start_cell, direction, num_steps):
-    """
-    method to traverse the grid, used to capturing initial tiles
-    """
-    for step in range(num_steps):
-        dummy_row = start_cell[0] + step * direction[0]
-        dummy_col = start_cell[1] + step * direction[1]
-
 
 class TwentyFortyEight:
     """
@@ -72,15 +64,28 @@ class TwentyFortyEight:
         self._grid_height = grid_height
         self._grid_width = grid_width
         self.reset()
-        self._initial_tiles = {LEFT: traverse_grid((0, 0), (1, 0), grid_height),
-                               UP: traverse_grid((0,0), (0,1), grid_height),
-                               RIGHT: traverse_grid((0, grid_width - 1), (1, 0), grid_height),
-                               DOWN: traverse_grid((grid_height - 1, 0), (0, 1), grid_width)}
+        self._initial_tiles = {UP: self.traverse_grid((0,0), (0,1), grid_height),
+                               DOWN: self.traverse_grid((grid_height - 1, 0), (0, 1), grid_width),
+                               LEFT: self.traverse_grid((0, 0), (1, 0), grid_height),
+                               RIGHT: self.traverse_grid((0, grid_width - 1), (1, 0), grid_height)}
 
         # self._initial_tiles[LEFT]
         # self._initial_tiles[UP]
         # self._initial_tiles[RIGHT]
         # self._initial_tiles[DOWN]
+
+    def traverse_grid(self, start_cell, direction, num_steps):
+        """
+        method to traverse the grid, used to capture initial tiles
+        """
+        temporary_list= []
+        for step in range(num_steps):
+            row = start_cell[0] + step * direction[0]
+            col = start_cell[1] + step * direction[1]
+            idx = row, col
+            # val = self._board[row][col]
+            temporary_list.append(idx)
+        return temporary_list
 
 
     def reset(self):
@@ -121,6 +126,7 @@ class TwentyFortyEight:
         # to determine how the algorithm is applied in 'merge'
 
         print self._initial_tiles[direction]
+
 
 
     def new_tile(self):
