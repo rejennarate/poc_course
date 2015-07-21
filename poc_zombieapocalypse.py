@@ -68,8 +68,8 @@ class Apocalypse(poc_grid.Grid):
         Generator that yields the zombies in the order they were
         added.
         """
-        # replace with an actual generator
-        return
+        for idx in self._zombie_list:
+            yield idx
 
     def add_human(self, row, col):
         """
@@ -87,8 +87,8 @@ class Apocalypse(poc_grid.Grid):
         """
         Generator that yields the humans in the order they were added.
         """
-        # replace with an actual generator
-        return
+        for idx in self._human_list:
+            yield idx
         
     def compute_distance_field(self, entity_type):
         """
@@ -115,4 +115,4 @@ class Apocalypse(poc_grid.Grid):
 # Start up gui for simulation - You will need to write some code above
 # before this will work without errors
 
-# poc_zombie_gui.run_gui(Apocalypse(30, 40))
+poc_zombie_gui.run_gui(Apocalypse(30, 40))
