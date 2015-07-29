@@ -16,8 +16,8 @@ class SolitaireMancala:
         """
         Create Mancala game with empty store and no houses
         """
-        self._starting_configuration = [0]
-        self._current_configuration = []
+        self._board = [0]
+        self._reversed_configuration = []
 
     def set_board(self, configuration):
         """
@@ -25,29 +25,27 @@ class SolitaireMancala:
         house zero corresponds to the store and is on right
         houses are number in ascending order from right to left
         """
-        self._starting_configuration = configuration
-        # if current_configuration is already set, return so that current_configuration isn't overwritten
-        self._current_configuration = self._starting_configuration[::-1]
-
+        self._board = list(configuration)
 
     def __str__(self):
         """
         Return string representation for Mancala board
         """
-        return str(self._current_configuration)
+        self._reversed_configuration = self._board[::-1]
+        return str(self._reversed_configuration)
 
     def get_num_seeds(self, house_num):
         """
         Return the number of seeds in given house on board
         """
-        return self._starting_configuration[house_num]
+        return self._board[house_num]
 
     def is_game_won(self):
         """
         Check to see if all houses but house zero are empty
         """
         non_empty_houses = 0
-        for seeds in self._current_configuration[:-1]:
+        for seeds in self._board:
             if seeds > 0:
                 non_empty_houses += 1
 
@@ -60,26 +58,14 @@ class SolitaireMancala:
         """
         Check whether a given move is legal
         """
-        num_seeds = self._current_configuration[house_num]
+        num_seeds = self._board[house_num]
 
-        list_length = len(self._current_configuration)-1
-        # print num_seeds # 2
-        # print list_length # 3
-        # print house_num # 1
-        # print self._current_configuration # [4, 2, 2, 0]
-
-        # the move is legal if the number of seeds is exactly equal to the number of houses/store to its right
-        # list length is not the way to do this because with different sized lists, it fails
-        if num_seeds == (list_length - house_num) and num_seeds != 0:
-            print num_seeds
-            # print house_num
-            # print list_length
-            # print self._current_configuration.index(-1)
-            # print 'true'
+        # the move is legal if the number of seeds is exactly equal to its house number in the non-reversed list
+        if num_seeds == house_num and num_seeds != 0:
             return True
+        elif house_num == 0:
+            return False
         else:
-            print num_seeds
-            #print 'false'
             return False
 
     def apply_move(self, house_num):
@@ -87,18 +73,11 @@ class SolitaireMancala:
         Move all of the stones from house to lower/left houses
         Last seed must be played in the store (house zero)
         """
-        # current_configuration = [0, 5, 3, 1, 1, 0, 0]
-        # keep the value of house_num in a variable before clobbering it with 0
-        previous_seeds = self._current_configuration[house_num]
-        self._current_configuration[house_num] = 0
-        left_side = self._current_configuration[:house_num+1]
 
-        # should probably add + 1 to seeds in list until previous_seeds = 0
-        # decrement using previous_seeds -= 1
-        right_side = [seeds + 1 for seeds in self._current_configuration[house_num+1:]]
-        self._current_configuration = left_side + right_side
-        return self._current_configuration
-
+        if self.is_legal_move(house_num):
+            for idx in range(house_num):
+                self._board[idx] += 1
+            self._board[house_num] = 0
 
     def choose_move(self):
         """
@@ -107,19 +86,11 @@ class SolitaireMancala:
         Note that using a longer legal move would make smaller illegal
         If no legal move, return house zero
         """
-        for house_num in reversed(self._current_configuration):
-            # print self._current_configuration
-            # print house_num
-            if self.is_legal_move(house_num) == True:
-                print "true"
-                # print self.is_legal_move(house_num)
+        for house_num in range(1, len(self._board)):
+            if self.is_legal_move(house_num):
                 return house_num
-            else:
-                print "false"
-                # print self._current_configuration
-                return self._current_configuration[-1]
 
-        #return 0
+        return 0
 
     def plan_moves(self):
         """
@@ -128,7 +99,14 @@ class SolitaireMancala:
 		when given a choice of legal moves
         Not used in GUI version, only for machine testing
         """
-        return []
+        plan_board = list(self._board)
+        legal_moves = []
+        for house_num in range(len(plan_board)):
+            if self.is_legal_move(house_num):
+                self.apply_move(house_num)
+                legal_moves.append(house_num)
+
+        return legal_moves
 
 
 # Create tests to check the correctness of your code
@@ -141,37 +119,30 @@ def test_mancala():
     my_game = SolitaireMancala()
     print "Testing init - Computed:", my_game, "Expected: [0]"
 
-    # config1 = [0, 0, 1, 1, 3, 5, 0]
-    config1 = [0, 2, 2]
+    config1 = [0, 0, 1, 1, 3, 5, 0]
+    config2 = [0, 1, 2, 3]
+    config3 = [0, 0, 0, 0, 0, 0]
     my_game.set_board(config1)
 
-    #print "Testing set_board - Computed:", str(my_game), "Expected:", str([0, 5, 3, 1, 1, 0, 0])
-    #print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(1), "Expected:", config1[1]
-    #print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(3), "Expected:", config1[3]
-    # print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(5), "Expected:", config1[5]
-    #print "Testing is_game_won - Computed:", my_game.is_game_won(), "Expected:", False
-    #print "Testing is_legal_move - Computed:", my_game.is_legal_move(0), "Expected", False
-    #print "Testing is_legal_move - Computed:", my_game.is_legal_move(1), "Expected", True
+    print "Testing set_board - Computed:", str(my_game), "Expected:", str([0, 5, 3, 1, 1, 0, 0])
+    print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(1), "Expected:", config1[1]
+    print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(3), "Expected:", config1[3]
+    print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(5), "Expected:", config1[5]
+    print "Testing is_game_won - Computed:", my_game.is_game_won(), "Expected:", False
+    print "Testing is_legal_move - Computed:", my_game.is_legal_move(0), "Expected", False
     print "Testing is_legal_move - Computed:", my_game.is_legal_move(1), "Expected", False
-    #print "Testing is_legal_move - Computed:", my_game.is_legal_move(3), "Expected", False
-    #print "Testing is_legal_move - Computed:", my_game.is_legal_move(4), "Expected", False
-    # print "Testing is_legal_move - Computed:", my_game.is_legal_move(5), "Expected", False
-    # print "Testing is_legal_move - Computed:", my_game.is_legal_move(6), "Expected", False
-    #print "Testing apply_move - Computed:", my_game.apply_move(1), "Expected", [0, 0, 4, 2, 2, 1, 1]
-    #print "Testing choose_move - Computed:", my_game.choose_move(), "Expected", 4
-    # add more tests here
+    print "Testing is_legal_move - Computed:", my_game.is_legal_move(2), "Expected", False
+    print "Testing is_legal_move - Computed:", my_game.is_legal_move(3), "Expected", False
+    print "Testing is_legal_move - Computed:", my_game.is_legal_move(4), "Expected", False
+    print "Testing is_legal_move - Computed:", my_game.is_legal_move(5), "Expected", True
+    print "Testing is_legal_move - Computed:", my_game.is_legal_move(6), "Expected", False
+    print "Testing apply_move - Computed:", my_game.apply_move(1), "Expected", [0, 0, 4, 2, 2, 1, 1]
+    print "Testing choose_move - Computed:", my_game.choose_move(), "Expected", 5
+    print "Testing plan_moves - Computed:", my_game.plan_moves(), "Expected", [5]
 
 test_mancala()
 
 
 # Import GUI code once you feel your code is correct
-# import poc_mancala_gui
-# poc_mancala_gui.run_gui(SolitaireMancala())
-
-
-
-
-
-
-
-
+import poc_mancala_gui
+poc_mancala_gui.run_gui(SolitaireMancala())
