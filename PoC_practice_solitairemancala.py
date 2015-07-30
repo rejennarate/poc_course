@@ -17,7 +17,7 @@ class SolitaireMancala:
         Create Mancala game with empty store and no houses
         """
         self._board = [0]
-        self._reversed_configuration = []
+
 
     def set_board(self, configuration):
         """
@@ -31,8 +31,7 @@ class SolitaireMancala:
         """
         Return string representation for Mancala board
         """
-        self._reversed_configuration = self._board[::-1]
-        return str(self._reversed_configuration)
+        return str(self._board[::-1])
 
     def get_num_seeds(self, house_num):
         """
@@ -60,7 +59,7 @@ class SolitaireMancala:
         """
         num_seeds = self._board[house_num]
 
-        # the move is legal if the number of seeds is exactly equal to its house number in the non-reversed list
+        # the move is legal if the number of seeds is exactly equal to its house number
         if num_seeds == house_num and num_seeds != 0:
             return True
         elif house_num == 0:
@@ -111,38 +110,10 @@ class SolitaireMancala:
 
 # Create tests to check the correctness of your code
 
-def test_mancala():
-    """
-    Test code for Solitaire Mancala
-    """
-
-    my_game = SolitaireMancala()
-    print "Testing init - Computed:", my_game, "Expected: [0]"
-
-    config1 = [0, 0, 1, 1, 3, 5, 0]
-    config2 = [0, 1, 2, 3]
-    config3 = [0, 0, 0, 0, 0, 0]
-    my_game.set_board(config1)
-
-    print "Testing set_board - Computed:", str(my_game), "Expected:", str([0, 5, 3, 1, 1, 0, 0])
-    print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(1), "Expected:", config1[1]
-    print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(3), "Expected:", config1[3]
-    print "Testing get_num_seeds - Computed:", my_game.get_num_seeds(5), "Expected:", config1[5]
-    print "Testing is_game_won - Computed:", my_game.is_game_won(), "Expected:", False
-    print "Testing is_legal_move - Computed:", my_game.is_legal_move(0), "Expected", False
-    print "Testing is_legal_move - Computed:", my_game.is_legal_move(1), "Expected", False
-    print "Testing is_legal_move - Computed:", my_game.is_legal_move(2), "Expected", False
-    print "Testing is_legal_move - Computed:", my_game.is_legal_move(3), "Expected", False
-    print "Testing is_legal_move - Computed:", my_game.is_legal_move(4), "Expected", False
-    print "Testing is_legal_move - Computed:", my_game.is_legal_move(5), "Expected", True
-    print "Testing is_legal_move - Computed:", my_game.is_legal_move(6), "Expected", False
-    print "Testing apply_move - Computed:", my_game.apply_move(1), "Expected", [0, 0, 4, 2, 2, 1, 1]
-    print "Testing choose_move - Computed:", my_game.choose_move(), "Expected", 5
-    print "Testing plan_moves - Computed:", my_game.plan_moves(), "Expected", [5]
-
-test_mancala()
 
 
 # Import GUI code once you feel your code is correct
 import poc_mancala_gui
+import poc_mancala_testsuite
 poc_mancala_gui.run_gui(SolitaireMancala())
+poc_mancala_testsuite.run_suite(SolitaireMancala)
